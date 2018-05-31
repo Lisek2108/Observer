@@ -47,7 +47,7 @@ class Observer final {
         auto pfunc = std::dynamic_pointer_cast<Callback<Args...>>(function);
         if (pfunc) {
           std::function<void(Args...)> func = pfunc->cb;
-          func(std::forward<Args>(a_arg)...);
+          func((a_arg)...);
         }
       }
     }
