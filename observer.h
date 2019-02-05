@@ -31,6 +31,23 @@
 #include <string>
 #include <vector>
 
+#if defined(_WIN64) || defined(_WIN32)
+# if defined(OBSERVER_SHARED)
+#  if defined(OBSERVER_SHARED_EXPORTS)
+#   define OBSERVER_API __declspec(dllexport)
+#  else
+#   define OBSERVER_API __declspec(dllimport)
+#  endif
+# else
+#  define OBSERVER_API
+# endif
+#else
+# define OBSERVER_API __attribute__((visibility("default")))
+#endif
+#ifdef _MSC_VER
+# pragma warning(disable:4251)
+#endif
+
 struct VirtualInterface {
   virtual ~VirtualInterface() {}
 };
@@ -43,7 +60,7 @@ using FunctionString = std::function<void(std::string)>;
 using FunctionIntInt = std::function<void(int, int)>;
 }; // namespace Funcs
 
-class Observer final {
+class OBSERVER_API Observer final {
   template<typename... Args>
   struct Callback : VirtualInterface {
     std::function<void(Args...)> cb;
