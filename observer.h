@@ -68,7 +68,7 @@ namespace Observer {
 
   static std::map<std::string, std::vector<std::shared_ptr<VirtualInterface>>> map;
   template<typename... Args>
-  extern void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
+  void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
   {
     auto pfunc = std::make_shared<Callback<Args...>>();
     pfunc->cb = a_callback;
@@ -76,7 +76,7 @@ namespace Observer {
   }
 
   template<typename... Args>
-  extern void notify(std::string const &a_topic, Args... a_arg)
+  void notify(std::string const &a_topic, Args... a_arg)
   {
     if (map.count(a_topic) > 0) {
       for (auto &function : map.at(a_topic)) {
