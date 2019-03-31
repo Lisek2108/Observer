@@ -1,8 +1,6 @@
 language: cpp
 sudo: false
-cache: ccache
-script: cmake
-    
+
 matrix:
   include:
     - os: linux
@@ -13,7 +11,7 @@ matrix:
           packages:
             - g++-7
       env:
-- MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -25,8 +23,7 @@ before_install:
   - cmake --version
 
 before_script:
-  - mkdir -p build/{debuf,release}
-  - cd build/debug
+  - mkdir -p build/{debug,release}
   - cd build/debug
   - cmake -DCMAKE_BUILD_TYPE=Debug ../..
   - cd ../release
@@ -34,7 +31,7 @@ before_script:
   - cd ..
 
 script:
-    - cd debug
-    - cmake --build . -- -j2
-    - cd ../release
-    - cmake --build . -- -j2
+  - cd debug
+  - cmake --build . -- -j2
+  - cd ../release
+  - cmake --build . -- -j2
