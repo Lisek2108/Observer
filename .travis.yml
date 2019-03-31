@@ -1,0 +1,40 @@
+language: cpp
+sudo: false
+cache: ccache
+script: cmake
+    
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+- MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+  - which $CXX
+  - $CXX --version
+  - which $CC
+  - $CC --version
+  - which cmake
+  - cmake --version
+
+before_script:
+  - mkdir -p build/{debuf,release}
+  - cd build/debug
+  - cd build/debug
+  - cmake -DCMAKE_BUILD_TYPE=Debug ../..
+  - cd ../release
+  - cmake -DCMAKE_BUILD_TYPE=Release ../..
+  - cd ..
+
+script:
+    - cd debug
+    - cmake --build . -- -j2
+    - cd ../release
+    - cmake --build . -- -j2

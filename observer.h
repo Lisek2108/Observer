@@ -60,18 +60,15 @@ using FunctionString = std::function<void(std::string)>;
 using FunctionIntInt = std::function<void(int, int)>;
 }; // namespace Funcs
 
-class OBSERVER_API Observer final {
+namespace Observer {
   template<typename... Args>
   struct Callback : VirtualInterface {
     std::function<void(Args...)> cb;
   };
-  Observer() {}
-  ~Observer() {}
-  static void topicNotFound(std::string const &a_str);
+
   static std::map<std::string, std::vector<std::shared_ptr<VirtualInterface>>> map;
- public:
   template<typename... Args>
-  static void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
+  extern void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
   {
     auto pfunc = std::make_shared<Callback<Args...>>();
     pfunc->cb = a_callback;
@@ -79,7 +76,7 @@ class OBSERVER_API Observer final {
   }
 
   template<typename... Args>
-  static void notify(std::string const &a_topic, Args... a_arg)
+  extern void notify(std::string const &a_topic, Args... a_arg)
   {
     if (map.count(a_topic) > 0) {
       for (auto &function : map.at(a_topic)) {
