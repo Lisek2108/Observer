@@ -32,20 +32,20 @@
 #include <vector>
 
 #if defined(_WIN64) || defined(_WIN32)
-# if defined(OBSERVER_SHARED)
-#  if defined(OBSERVER_SHARED_EXPORTS)
-#   define OBSERVER_API __declspec(dllexport)
-#  else
-#   define OBSERVER_API __declspec(dllimport)
-#  endif
-# else
-#  define OBSERVER_API
-# endif
+#if defined(OBSERVER_SHARED)
+#if defined(OBSERVER_SHARED_EXPORTS)
+#define OBSERVER_API __declspec(dllexport)
 #else
-# define OBSERVER_API __attribute__((visibility("default")))
+#define OBSERVER_API __declspec(dllimport)
+#endif
+#else
+#define OBSERVER_API
+#endif
+#else
+#define OBSERVER_API __attribute__((visibility("default")))
 #endif
 #ifdef _MSC_VER
-# pragma warning(disable:4251)
+#pragma warning(disable : 4251)
 #endif
 
 struct VirtualInterface {
@@ -60,15 +60,17 @@ using FunctionString = std::function<void(std::string)>;
 using FunctionIntInt = std::function<void(int, int)>;
 }; // namespace Funcs
 
-namespace Observer {
+class Observer {
   template<typename... Args>
   struct Callback : VirtualInterface {
     std::function<void(Args...)> cb;
   };
 
-  static std::map<std::string, std::vector<std::shared_ptr<VirtualInterface>>> map;
+  static inline std::map<std::string, std::vector<std::shared_ptr<VirtualInterface>>> map{};
+
+ public:
   template<typename... Args>
-  void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
+  static void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
   {
     auto pfunc = std::make_shared<Callback<Args...>>();
     pfunc->cb = a_callback;
@@ -76,7 +78,7 @@ namespace Observer {
   }
 
   template<typename... Args>
-  void notify(std::string const &a_topic, Args... a_arg)
+  static void notify(std::string const &a_topic, Args... a_arg)
   {
     if (map.count(a_topic) > 0) {
       for (auto &function : map.at(a_topic)) {
