@@ -14,15 +14,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 option(OBSERVER_BUILD_EXAMPLES "Build examples" ON)
 
-add_library(Observer SHARED observer.h)
-target_include_directories(Observer SYSTEM PRIVATE)
-target_compile_definitions(Observer PUBLIC OBSERVER_SHARED PRIVATE OBSERVER_SHARED_EXPORTS)
-set_target_properties(Observer PROPERTIES LINKER_LANGUAGE CXX)
-
 if (OBSERVER_BUILD_EXAMPLES)
 
 add_executable(ObserverTest
-    example.cpp)
-  target_link_libraries(ObserverTest Observer)
+  observer.h
+  example.cpp)
 
 endif ()

@@ -31,23 +31,6 @@
 #include <string>
 #include <vector>
 
-#if defined(_WIN64) || defined(_WIN32)
-#if defined(OBSERVER_SHARED)
-#if defined(OBSERVER_SHARED_EXPORTS)
-#define OBSERVER_API __declspec(dllexport)
-#else
-#define OBSERVER_API __declspec(dllimport)
-#endif
-#else
-#define OBSERVER_API
-#endif
-#else
-#define OBSERVER_API __attribute__((visibility("default")))
-#endif
-#ifdef _MSC_VER
-#pragma warning(disable : 4251)
-#endif
-
 struct VirtualInterface {
   virtual ~VirtualInterface() {}
 };
