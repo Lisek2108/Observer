@@ -30,7 +30,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-
 struct VirtualInterface {
   virtual ~VirtualInterface() {}
 };
@@ -55,20 +54,19 @@ class Observer {
   template<typename... Args>
   static void registerListener(std::string const &a_topic, const std::function<void(Args...)> &a_callback)
   {
-    auto pfunc = std::make_shared<Callback<Args...>>();
+    auto pfunc = std::make_shared<Callback<const Args&...>>();
     pfunc->cb = a_callback;
     map[a_topic].push_back(pfunc);
   }
-
   template<typename... Args>
-  static void notify(std::string const &a_topic, Args... a_arg)
+  static void notify(std::string const &a_topic,const Args& ... a_arg)
   {
     if (map.count(a_topic) > 0) {
       for (auto &function : map.at(a_topic)) {
-        auto pfunc = std::dynamic_pointer_cast<Callback<Args...>>(function);
+        auto pfunc = std::dynamic_pointer_cast<Callback<const Args& ...>>(function);
         if (pfunc) {
-          std::function<void(Args...)> func = pfunc->cb;
-          func((a_arg)...);
+          const std::function<void(const Args&...)> &func = pfunc->cb;
+          func(a_arg...);
         }
       }
     }
